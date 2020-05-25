@@ -130,16 +130,16 @@ LocalMedia.prototype.startScreenShare = function (constraints, cb) {
             self.localScreens.push(stream);
 
             stream.getTracks().forEach(function (track) {
-                track.addEventListener('ended', function () {
-                    var isAllTracksEnded = true;
-                    stream.getTracks().forEach(function (t) {
-                        isAllTracksEnded = t.readyState === 'ended' && isAllTracksEnded;
-                    });
+                track.onended = () => {
+                  var isAllTracksEnded = true;
+                  stream.getTracks().forEach(function (t) {
+                      isAllTracksEnded = t.readyState === 'ended' && isAllTracksEnded;
+                  });
 
-                    if (isAllTracksEnded) {
-                        self._removeStream(stream);
-                    }
-                });
+                  if (isAllTracksEnded) {
+                      self._removeStream(stream);
+                  }
+                };
             });
 
             self.emit('localScreen', stream);
